@@ -1,6 +1,5 @@
 import wrapAsync from "../Utils/wrapAsync.js";
 import gptGenerateProposal from "../Config/GPT.Config.js";
-import formatProposalContent from "../Utils/gptResponseFormatter.js";
 import ApiResponse from "../Utils/ApiResponse.js";
 import Proposal from "../Models/Proposal.Model.js";
 
@@ -31,8 +30,6 @@ export const getProposalByUserId = wrapAsync(async (req, res, next) => {
   // Fetching the user's proposals
   const proposals = await Proposal.find({ uid }).lean();
 
-  console.log("all proposals : ", proposals);
-  console.log("--------------------------------");
   const updatedProposals = proposals.map((proposal) => {
     const nProposal = proposal.content.split("\n");
     return { ...proposal, content: nProposal };
@@ -54,5 +51,6 @@ export const getProposalByUserId = wrapAsync(async (req, res, next) => {
   // });
 
   // Send the response with the user's proposals
+  
   res.status(200).json(new ApiResponse(true, "User Proposals", output));
 });
