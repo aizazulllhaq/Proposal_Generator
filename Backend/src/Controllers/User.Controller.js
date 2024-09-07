@@ -5,7 +5,7 @@ import wrapAsync from "../Utils/wrapAsync.js";
 export const getUser = wrapAsync(async (req, res, next) => {
   const uid = req.user?.id;
 
-  const user = await User.findById(uid);
+  const user = await User.findById(uid).select("name email profileImage");
 
   if (!user) return next(404, "User Not Found");
 

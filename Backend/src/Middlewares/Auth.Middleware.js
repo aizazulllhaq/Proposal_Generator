@@ -20,6 +20,8 @@ export const checkAuthentication = (req, res, next) => {
       next(new ApiError(400, "Invalid AccessToken"));
     }
   }
+
+  next();
 };
 
 export const restrictSecureRoutesFromUnAuthenticatedUsers = (role = []) => {

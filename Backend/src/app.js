@@ -45,9 +45,13 @@ app.use("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Internal Server Error" } = err;
-
-  res.status(statusCode).json({ message });
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
 });
+
 
 export default app;

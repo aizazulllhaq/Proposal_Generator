@@ -12,6 +12,7 @@ import wrapAsync from "../Utils/wrapAsync.js";
 export const signUp = wrapAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
   const profileImg = req.file?.path;
+  console.log(profileImg);
 
   const isUser = await User.findOne({ email });
 
@@ -53,6 +54,7 @@ export const verifyMail = wrapAsync(async (req, res, next) => {
   if (!isUser) return next(new ApiError(400, "Invalid Token"));
 
   isUser.token = "";
+  isUser.isVerified = true;
 
   await isUser.save();
 
@@ -74,6 +76,9 @@ export const signIn = wrapAsync(async (req, res, next) => {
   const isPasswordCorrect = await isUser.isPasswordMatch(password);
 
   if (!isPasswordCorrect) return next(new ApiError(400, "Invalid Credentials"));
+
+  if (!isUser.isVerified)
+    return next(new ApiError(400, "Please first verify mail"));
 
   const accessToken = await isUser.generateAccessToken();
 

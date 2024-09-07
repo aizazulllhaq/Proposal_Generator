@@ -13,6 +13,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     profileImage: {
       type: String,
       required: true,
@@ -48,8 +52,8 @@ userSchema.set("toJSON", {
   },
 });
 
-userSchema.pre("save", async function (password) {
-  if (!this.isModified("password")) next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 10); // return hash-password
 

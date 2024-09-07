@@ -13,25 +13,46 @@ export const generateProposal = wrapAsync(async (req, res, next) => {
     `client name : ( ${name} ) and client project description :  ${description} please write proposal for it`
   );
 
-  const formattedContent = formatProposalContent(proposal);
+  // const formattedContent = formatProposalContent(proposal);
 
-  // TODO : save proposal in db for history tracking
   const newProposal = await Proposal.create({
     name,
     description,
     uid,
-    content: formattedContent,
+    content: proposal,
   });
-
-  console.log("newProposal Content : ", newProposal);
-  console.log("formattedContent Content : ", formattedContent);
 
   res.status(200).json(new ApiResponse(true, "Project Proposal", newProposal));
 });
 
 export const getProposalByUserId = wrapAsync(async (req, res, next) => {
   const uid = req.user?.id;
-  const proposals = await Proposal.find({ uid });
 
-  res.status(200).json(new ApiResponse(true, "User Proposals", proposals));
+  // Fetching the user's proposals
+  const proposals = await Proposal.find({ uid }).lean();
+
+  console.log("all proposals : ", proposals);
+  console.log("--------------------------------");
+  const updatedProposals = proposals.map((proposal) => {
+    const nProposal = proposal.content.split("\n");
+    return { ...proposal, content: nProposal };
+  });
+
+  const output = updatedProposals.map((item) => ({
+    ...item,
+    content: item.content.filter((el) => el.trim() !== ""),
+  }));
+
+  // const finalOutput = output.map((item) => {
+  //   const filterContent = item.content.map((item) =>
+  //     item.trim().endsWith(":") ? `**${item.trim()}**` : item
+  //   );
+  //   return {
+  //     ...output,
+  //     content: filterContent,
+  //   };
+  // });
+
+  // Send the response with the user's proposals
+  res.status(200).json(new ApiResponse(true, "User Proposals", output));
 });
