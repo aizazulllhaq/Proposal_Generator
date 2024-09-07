@@ -17,14 +17,28 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Middlewares
+app.use(checkAuthentication);
+
 // Routers
 import authUserRouter from "./Routes/Auth.User.Routes.js";
 import userRouter from "./Routes/User.Routes.js";
 import proposalRouter from "./Routes/Proposal.Routes.js";
+import {
+  checkAuthentication,
+  restrictSecureRoutesFromUnAuthenticatedUsers,
+} from "./Middlewares/Auth.Middleware.js";
 
 app.use("/api/v1/users/auth", authUserRouter);
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/proposal", proposalRouter);
+app.use(
+  "/api/v1/users",
+  restrictSecureRoutesFromUnAuthenticatedUsers(["NORMAL", "ADMIN"]),
+  userRouter
+);
+app.use(
+  "/api/v1/proposal",
+  restrictSecureRoutesFromUnAuthenticatedUsers(["NORMAL", "ADMIN"]),
+  proposalRouter
+);
 
 app.use("*", (req, res, next) => {
   return next(new ApiError(404, "Not Found"));
