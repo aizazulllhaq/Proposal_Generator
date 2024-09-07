@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { FPORT, FRONTEND_URL } from "./constant";
+import { FPORT, FRONTEND_URL } from "./constant.js";
 import cookieParser from "cookie-parser";
-import ApiError from "./Utils/ApiError";
+import ApiError from "./Utils/ApiError.js";
 
 const app = express();
 

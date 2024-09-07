@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import dbConnection from "./src/DB/dbConnection";
-import app from "./src/app";
-import { PORT, SERVER_URL } from "./src/constant";
+import dbConnection from "./src/DB/dbConnection.js";
+import app from "./src/app.js";
+import { PORT, SERVER_URL } from "./src/constant.js";
 
 dotenv.config({
   path: "./env",

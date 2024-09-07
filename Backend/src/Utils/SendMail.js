@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { GOOGLE_SMTP_EMAIL, GOOGLE_SMTP_PASS } from "../constant";
+import { GOOGLE_SMTP_EMAIL, GOOGLE_SMTP_PASS } from "../constant.js";
 
 function sendMail(mailOptions) {
   const transporter = nodemailer.createTransport({
