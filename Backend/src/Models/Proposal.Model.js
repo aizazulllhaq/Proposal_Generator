@@ -10,6 +10,10 @@ const proposalSchema = new Schema(
       type: String,
       required: true,
     },
+    content:{
+      type:String,
+      required:true,
+    },
     uid: {
       type: Schema.Types.ObjectId,
       ref: "User",

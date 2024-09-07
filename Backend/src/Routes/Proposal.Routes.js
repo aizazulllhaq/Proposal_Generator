@@ -1,8 +1,15 @@
 import { Router } from "express";
-import { generateProposal } from "../Controllers/Proposal.Controller.js";
+import {
+  generateProposal,
+  getProposalByUserId,
+} from "../Controllers/Proposal.Controller.js";
 
 const proposalRouter = Router();
 
-proposalRouter.post("/generate-proposal", generateProposal);
+// api/v1/proposal
+
+proposalRouter
+  .post("/generate-proposal", generateProposal)
+  .get("/my", getProposalByUserId);
 
 export default proposalRouter;
