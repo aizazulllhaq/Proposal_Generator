@@ -4,7 +4,7 @@ import React from "react";
 const Navbar = () => {
   return (
     <Box bgcolor={"red"}>
-      <AppBar position="sticky" sx={{ backgroundColor: "#1E1E24" }}>
+      <AppBar position="sticky" sx={{ backgroundColor: "#111111" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography>P G</Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

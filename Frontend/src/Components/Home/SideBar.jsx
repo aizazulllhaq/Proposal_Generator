@@ -12,13 +12,14 @@ import HistoryIcon from "@mui/icons-material/History";
 const SideBar = () => {
   return (
     <Box
-      flex={1}
-      bgcolor={"#1E1E24"}
+      flex={2}
+      bgcolor={"#111111"}
       color={"white"}
       sx={{
         height: "100vh",
         overflowY: "scroll",
-        "&::-webkit-scrollbar": { display: "none" },
+        scrollbarWidth: "none",
+        display: { xs: "none", sm: "block" },
       }}
     >
       <List
@@ -33,11 +34,11 @@ const SideBar = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap:1,
-            opacity:0.8
+            gap: 1,
+            opacity: 0.8,
           }}
         >
-          <HistoryIcon/>
+          <HistoryIcon />
           <Typography
             sx={{ textAlign: "center", fontWeight: 100, fontSize: 28 }}
             my={2}
@@ -93,6 +94,27 @@ const SideBar = () => {
             <ListItemText primary="Eric Hoffman Additionally done" />
           </ListItemButton>
         </ListItem>
+        <ListItem>
+          <KeyboardArrowRightIcon />
+
+          <ListItemButton>
+            <ListItemText primary="Eric Hoffman Additionally done" />
+          </ListItemButton>
+        </ListItem>{" "}
+        <ListItem>
+          <KeyboardArrowRightIcon />
+
+          <ListItemButton>
+            <ListItemText primary="Eric Hoffman Additionally done" />
+          </ListItemButton>
+        </ListItem>{" "}
+        <ListItem>
+          <KeyboardArrowRightIcon />
+
+          <ListItemButton>
+            <ListItemText primary="Eric Hoffman Additionally done" />
+          </ListItemButton>
+        </ListItem>{" "}
         <ListItem>
           <KeyboardArrowRightIcon />
 
