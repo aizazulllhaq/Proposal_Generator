@@ -5,14 +5,13 @@ const Search = styled("div")({
   width: "90%",
   maxWidth: 600,
   padding: "10px",
-  boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
   display:"flex",
   flexDirection:"column",
 });
 
 const StyledTextarea = styled("textarea")({
   width: "100%",
-  height: "100px",
+  height: "120px",
   backgroundColor: "#2c2c2c",
   border: "none",
   borderRadius: "15px",
@@ -24,6 +23,7 @@ const StyledTextarea = styled("textarea")({
   resize: "none",
   overflowY: "auto",
   scrollbarWidth: "none",
+  boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
 });
 
 const Main = () => {
