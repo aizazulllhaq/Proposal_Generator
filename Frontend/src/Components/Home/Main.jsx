@@ -29,7 +29,7 @@ const StyledTextarea = styled("textarea")({
 const Main = () => {
   return (
     <Box
-      flex={6}
+      flex={{xs:4,sm:6}}
       bgcolor={"#0A0908"}
       color={"white"}
       display="flex"
