@@ -1,13 +1,14 @@
 import React from "react";
 import SideBar from "./SideBar";
 import Main from "./Main";
+import { Box } from "@mui/material";
 
 const Home = () => {
   return (
-    <div className="flex">
+    <Box sx={{display:"flex"}}>
       <SideBar />
       <Main />
-    </div>
+    </Box>
   );
 };
 

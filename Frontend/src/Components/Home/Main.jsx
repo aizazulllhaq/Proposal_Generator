@@ -1,11 +1,12 @@
 import React from "react";
 import SearchBar from "./SearchBar";
+import { Box } from "@mui/material";
 
 const Main = () => {
   return (
-    <div className="flex-4">
+    <Box flex={4} bgcolor={"black"}>
       <SearchBar />
-    </div>
+    </Box>
   );
 };
 
