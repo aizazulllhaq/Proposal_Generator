@@ -52,10 +52,17 @@ const StyledInput = styled(InputBase)({
   },
 });
 
-const SearchBar = ({ handleSubmit, register, reset, mutate }) => {
+const SearchBar = ({
+  handleSubmit,
+  register,
+  reset,
+  mutate,
+  setIsNewProposal,
+}) => {
   const onSubmit = (data) => {
     mutate(data);
     reset();
+    setIsNewProposal(false);
   };
 
   return (

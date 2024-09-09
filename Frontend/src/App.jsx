@@ -2,13 +2,10 @@ import { Box, Stack } from "@mui/material";
 import Home from "./Components/Home/Home";
 import Navbar from "./Components/Navbar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./Components/Login";
-import Signup from "./Components/Signup";
-import { useState } from "react";
+import LoginPage from "./Pages/LoginPage";
+import SignupPage from "./Pages/SignupPage";
 
 const App = () => {
-  const [user, setUser] = useState(false);
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -20,17 +17,17 @@ const App = () => {
     },
     {
       path: "/signin",
-      element: <Login />,
+      element: <LoginPage />,
     },
     {
       path: "/signup",
-      element: <Signup />,
+      element: <SignupPage />,
     },
   ]);
 
   return (
     <Box>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar />
       <RouterProvider router={router} />
     </Box>
   );

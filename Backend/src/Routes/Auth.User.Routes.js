@@ -13,7 +13,7 @@ const authUserRouter = Router();
 //   api/v1/users/auth
 
 authUserRouter
-  .post("/signup", upload.single("profileImage"), signUp)
+  .post("/signup", signUp)
   .post("/verify-mail/:token", verifyMail)
   .post("/signin", signIn)
   .post("/forget-password", forgetPasswordRequest)

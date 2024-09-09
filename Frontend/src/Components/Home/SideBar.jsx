@@ -51,6 +51,7 @@ const SideBar = ({ onProposalClick }) => {
             display: "flex",
             alignItems: "center",
             marginLeft: { sm: 5, md: 10 },
+            gap: 1,
           }}
         >
           <HistoryIcon />
@@ -65,6 +66,7 @@ const SideBar = ({ onProposalClick }) => {
             History
           </Typography>
         </Box>
+          <Typography variant="span" color="gray" sx={{marginLeft:6}}>Last 7 Submitted Proposals</Typography>
         <List
           sx={{
             width: "100%",

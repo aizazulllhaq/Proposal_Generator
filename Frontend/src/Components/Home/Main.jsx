@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, LinearProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import SearchBar from "./SearchBar";
 import Proposal from "./Proposal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ const postProposal = async ({ name, description }) => {
 };
 
 const Main = ({ selectedProposal }) => {
+  const [isNewProposal, setIsNewProposal] = useState(true);
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm();
 
@@ -23,6 +24,8 @@ const Main = ({ selectedProposal }) => {
     data: response,
     mutate,
     isPending,
+    isError,
+    error,
   } = useMutation({
     mutationFn: postProposal,
     onSuccess: () => {
@@ -32,8 +35,6 @@ const Main = ({ selectedProposal }) => {
       console.log("Error posting proposal : ", error);
     },
   });
-
-  console.log("selectedProposal : ", selectedProposal);
 
   return (
     <Box
@@ -51,7 +52,13 @@ const Main = ({ selectedProposal }) => {
         register={register}
         reset={reset}
         mutate={mutate}
+        setIsNewProposal={setIsNewProposal}
       />
+      {isError && (
+        <Typography variant="span" color="error">
+          {error.message}
+        </Typography>
+      )}
       {isPending && (
         <Box sx={{ width: "60%" }}>
           <LinearProgress />

@@ -11,28 +11,29 @@ import wrapAsync from "../Utils/wrapAsync.js";
 
 export const signUp = wrapAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
-  const profileImg = req.file?.path;
-  console.log(profileImg);
+  // const profileImg = req.file?.path;
 
   const isUser = await User.findOne({ email });
 
   if (isUser) return next(new ApiError(400, "Email Already Registered"));
+  console.log(isUser);
 
-  const cloudinaryResponse = await uploadOnCloudinary(profileImg);
+  // const cloudinaryResponse = await uploadOnCloudinary(profileImg);
 
   const newUser = new User({
     name,
     email,
     password,
-    profileImage: cloudinaryResponse.secure_url,
+    // profileImage: cloudinaryResponse.secure_url,
   });
-
+  console.log(newUser);
   const token = generateRandomToken(100);
-
+  
   newUser.token = token;
-
+  
   await newUser.save();
-
+  console.log(newUser);
+  
   EmailVerificationMail(newUser, token);
 
   res
