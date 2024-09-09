@@ -4,7 +4,6 @@ const proposalSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
     },
     description: {
       type: String,
@@ -17,7 +16,6 @@ const proposalSchema = new Schema(
     uid: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
   },
   {

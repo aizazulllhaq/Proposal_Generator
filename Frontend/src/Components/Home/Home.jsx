@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "./SideBar";
 import Main from "./Main";
 import { Box } from "@mui/material";
-import { Link } from "react-router-dom";
 
 const Home = () => {
+  const [selectedProposal, setSelectedProposal] = useState(null);
+
+  const handleProposal = (proposal) => {
+    console.log("single : ", proposal);
+    setSelectedProposal(proposal);
+  };
+
   return (
-    <Box sx={{display:"flex"}}>
-      <SideBar />
-      <Main />
+    <Box sx={{ display: "flex" }}>
+      <SideBar onProposalClick={handleProposal} />
+      <Main selectedProposal={selectedProposal} />
     </Box>
   );
 };

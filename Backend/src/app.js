@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
     // origin: `${FRONTEND_URL}/${FPORT}`,
-    origin:"http://localhost:5173",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -30,6 +30,8 @@ import {
 } from "./Middlewares/Auth.Middleware.js";
 import Proposal from "./Models/Proposal.Model.js";
 import ApiResponse from "./Utils/ApiResponse.js";
+import wrapAsync from "./Utils/wrapAsync.js";
+import gptGenerateProposal from "./Config/GPT.Config.js";
 
 app.use("/api/v1/users/auth", authUserRouter);
 app.use(
@@ -43,10 +45,10 @@ app.use(
   proposalRouter
 );
 
+// Rough
 app.get("/getProposals", async (req, res, next) => {
-
   // Fetching the user's proposals
-  const proposals = await Proposal.find({}).lean();
+  const proposals = await Proposal.find({}).limit(7).lean();
 
   const updatedProposals = proposals.map((proposal) => {
     const nProposal = proposal.content.split("\n");
@@ -58,8 +60,40 @@ app.get("/getProposals", async (req, res, next) => {
     content: item.content.filter((el) => el.trim() !== ""),
   }));
 
+  console.log("item :", output);
+
   res.status(200).json(new ApiResponse(true, "User Proposals", output));
 });
+
+app.post(
+  "/generate-proposal",
+  wrapAsync(async (req, res, next) => {
+    const { name, description } = req.body;
+
+    // gptGenerateProposal(prompt)
+    const proposal = await gptGenerateProposal(
+      `client name is ${name} , and client project description :  ${description} please write proposal for it`
+    );
+
+    const newProposal = await Proposal.create({
+      name,
+      description,
+      content: proposal,
+    });
+    console.log("new ", newProposal);
+
+    const filterContent = newProposal.content.split("\n");
+
+    res.status(200).json(
+      new ApiResponse(true, "Project Proposal", {
+        content: filterContent,
+        name: newProposal.name,
+      })
+    );
+  })
+);
+
+// Rough End
 
 app.use("*", (req, res, next) => {
   return next(new ApiError(404, "Not Found"));

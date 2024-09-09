@@ -9,11 +9,27 @@ import {
 import React from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import HistoryIcon from "@mui/icons-material/History";
-const SideBar = () => {
+import apiClient from "../Utils/apiClient";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+
+const fetchProposals = async () => {
+  const response = await apiClient.get("/getProposals");
+  const proposals = response.data.data;
+  console.log("Get proposals sidebar : ", proposals);
+  return proposals;
+};
+
+const SideBar = ({ onProposalClick }) => {
+  const { data: proposals } = useQuery({
+    queryKey: ["proposals"],
+    queryFn: fetchProposals,
+  });
+
   return (
     <Box
       flex={2}
-      bgcolor={"#111111"}
+      bgcolor={"#191919"}
       color={"white"}
       sx={{
         display: { xs: "none", sm: "block" },
@@ -24,16 +40,18 @@ const SideBar = () => {
           position: "fixed",
           width: {
             sm: "25vw",
-            md:"25vw",
-            lg: "100vw", 
+            md: "25vw",
+            lg: "100vw",
           },
-          overflowY: "auto", 
+          overflowY: "auto",
         }}
       >
         <List
           sx={{
             width: "100%",
             maxWidth: 360,
+            display: "flex",
+            flexDirection: "column",
           }}
           aria-label="contacts"
         >
@@ -58,19 +76,22 @@ const SideBar = () => {
               History
             </Typography>
           </Box>
-          <ListItem>
-            <KeyboardArrowRightIcon />
-            <ListItemButton>
-              <ListItemText
-                primary="Eric Hoffman Additionally done"
-                sx={{
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
+          {proposals &&
+            proposals.map((proposal) => (
+              <ListItem key={proposal.id}>
+                <KeyboardArrowRightIcon />
+                <ListItemButton onClick={() => onProposalClick(proposal)}>
+                  <ListItemText
+                    primary={proposal.name}
+                    sx={{
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Box>
     </Box>

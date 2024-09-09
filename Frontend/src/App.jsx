@@ -4,8 +4,11 @@ import Navbar from "./Components/Navbar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
+import { useState } from "react";
 
 const App = () => {
+  const [user, setUser] = useState(false);
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -27,7 +30,7 @@ const App = () => {
 
   return (
     <Box>
-      <Navbar />
+      <Navbar user={user} setUser={setUser} />
       <RouterProvider router={router} />
     </Box>
   );
