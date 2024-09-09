@@ -46,6 +46,25 @@ const SideBar = ({ onProposalClick }) => {
           overflowY: "auto",
         }}
       >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: { sm: 5, md: 10 },
+          }}
+        >
+          <HistoryIcon />
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontWeight: 100,
+              fontSize: { sm: 28, md: 28 },
+            }}
+            my={2}
+          >
+            History
+          </Typography>
+        </Box>
         <List
           sx={{
             width: "100%",
@@ -63,19 +82,7 @@ const SideBar = ({ onProposalClick }) => {
               gap: 1,
               opacity: 0.8,
             }}
-          >
-            <HistoryIcon />
-            <Typography
-              sx={{
-                textAlign: "center",
-                fontWeight: 100,
-                fontSize: { sm: 28, md: 28 },
-              }}
-              my={2}
-            >
-              History
-            </Typography>
-          </Box>
+          ></Box>
           {proposals &&
             proposals.map((proposal) => (
               <ListItem key={proposal.id}>

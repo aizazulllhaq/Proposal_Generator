@@ -48,7 +48,10 @@ app.use(
 // Rough
 app.get("/getProposals", async (req, res, next) => {
   // Fetching the user's proposals
-  const proposals = await Proposal.find({}).limit(7).lean();
+  const proposals = await Proposal.find({})
+    .sort({ createdAt: -1 })
+    .limit(7)
+    .lean();
 
   const updatedProposals = proposals.map((proposal) => {
     const nProposal = proposal.content.split("\n");
