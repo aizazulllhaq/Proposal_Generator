@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, IconButton, styled, Typography } from "@mui/material";
+import axios from "axios";
 
 const Search = styled("div")({
   width: "90%",
   maxWidth: 600,
   padding: "10px",
-  display:"flex",
-  flexDirection:"column",
+  display: "flex",
+  flexDirection: "column",
 });
 
 const StyledTextarea = styled("textarea")({
@@ -27,9 +28,23 @@ const StyledTextarea = styled("textarea")({
 });
 
 const Main = () => {
+  const [response, setResponse] = useState("");
+  const getProposals = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/getProposals");
+      console.log(response.data.data[0].content);
+      setResponse(response.data.data[0].content);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getProposals();
+  }, []);
+
   return (
     <Box
-      flex={{xs:4,sm:6}}
+      flex={{ xs: 4, sm: 6 }}
       bgcolor={"#0A0908"}
       color={"white"}
       display="flex"
@@ -57,6 +72,11 @@ const Main = () => {
             Generate Proposal
           </Button>
         </IconButton>
+      </Search>
+      <Search>
+        <Typography sx={{ opacity: 0.9, fontWeight: 50, fontSize: 18 }}>
+          {response && <p>{response}</p>}
+        </Typography>
       </Search>
     </Box>
   );

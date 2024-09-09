@@ -16,43 +16,63 @@ const SideBar = () => {
       bgcolor={"#111111"}
       color={"white"}
       sx={{
-        height: "100vh",
-        overflowY: "scroll",
-        scrollbarWidth: "none",
         display: { xs: "none", sm: "block" },
       }}
     >
-      <List
+      <Box
         sx={{
-          width: "100%",
-          maxWidth: 360,
+          position: "fixed",
+          width: {
+            sm: "25vw",
+            md:"25vw",
+            lg: "100vw", 
+          },
+          overflowY: "auto", 
         }}
-        aria-label="contacts"
       >
-        <Box
+        <List
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1,
-            opacity: 0.8,
+            width: "100%",
+            maxWidth: 360,
           }}
+          aria-label="contacts"
         >
-          <HistoryIcon />
-          <Typography
-            sx={{ textAlign: "center", fontWeight: 100, fontSize: 28 }}
-            my={2}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              opacity: 0.8,
+            }}
           >
-            History
-          </Typography>
-        </Box>
-        <ListItem>
-          <KeyboardArrowRightIcon />
-          <ListItemButton>
-            <ListItemText primary="Eric Hoffman Additionally done" />
-          </ListItemButton>
-        </ListItem>
-      </List>
+            <HistoryIcon />
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontWeight: 100,
+                fontSize: { sm: 28, md: 28 },
+              }}
+              my={2}
+            >
+              History
+            </Typography>
+          </Box>
+          <ListItem>
+            <KeyboardArrowRightIcon />
+            <ListItemButton>
+              <ListItemText
+                primary="Eric Hoffman Additionally done"
+                sx={{
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Box>
     </Box>
   );
 };

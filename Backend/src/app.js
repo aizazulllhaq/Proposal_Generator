@@ -8,7 +8,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: `${FRONTEND_URL}/${FPORT}`,
+    // origin: `${FRONTEND_URL}/${FPORT}`,
+    origin:"http://localhost:5173",
     credentials: true,
   })
 );
@@ -27,6 +28,8 @@ import {
   checkAuthentication,
   restrictSecureRoutesFromUnAuthenticatedUsers,
 } from "./Middlewares/Auth.Middleware.js";
+import Proposal from "./Models/Proposal.Model.js";
+import ApiResponse from "./Utils/ApiResponse.js";
 
 app.use("/api/v1/users/auth", authUserRouter);
 app.use(
@@ -40,6 +43,24 @@ app.use(
   proposalRouter
 );
 
+app.get("/getProposals", async (req, res, next) => {
+
+  // Fetching the user's proposals
+  const proposals = await Proposal.find({}).lean();
+
+  const updatedProposals = proposals.map((proposal) => {
+    const nProposal = proposal.content.split("\n");
+    return { ...proposal, content: nProposal };
+  });
+
+  const output = updatedProposals.map((item) => ({
+    ...item,
+    content: item.content.filter((el) => el.trim() !== ""),
+  }));
+
+  res.status(200).json(new ApiResponse(true, "User Proposals", output));
+});
+
 app.use("*", (req, res, next) => {
   return next(new ApiError(404, "Not Found"));
 });
@@ -52,6 +73,5 @@ app.use((err, req, res, next) => {
     message,
   });
 });
-
 
 export default app;
