@@ -11,19 +11,32 @@ import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import apiClient from "./Utils/apiClient";
-import { LoginOutlined, OpenInFull } from "@mui/icons-material";
+import { LoginOutlined } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signin } from "../authApi";
+import { setError, setLoading, setUser } from "../authSlice";
 
-const login = async ({ email, password }) => {
-  const response = await apiClient.post("/api/v1/users/auth/signin", {
-    email,
-    password,
+const Login = () => {
+  const dispatch = useDispatch();
+
+  const {
+    mutate,
+    data,
+    error: loginError,
+    isLoading,
+  } = useMutation({
+    mutationFn: signin,
+    onSuccess: () => {
+      console.log("Login Successfull");
+      dispatch(setUser(data.user));
+    },
+    onError: (err) => {
+      console.log("Error while login : ", err);
+      dispatch(setError(err.message));
+    },
   });
-  console.log(response.data);
-};
 
-const Login = ({ user, setUser }) => {
   const {
     register,
     handleSubmit,
@@ -31,25 +44,15 @@ const Login = ({ user, setUser }) => {
     reset,
   } = useForm();
 
-  const { mutate } = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
-      console.log("Login Successfull");
-      setUser(true);
-    },
-    onError: (error) => {
-      console.log("Error while login : ", error);
-    },
-  });
-
   const onSubmit = (data) => {
-    console.log(data);
-    // mutate(data);
+    dispatch(setLoading(true));
+    mutate(data);
+    dispatch(setLoading(false));
+    reset();
   };
-console.log(user);
+
   return (
     <>
-      {user && <Navigate to="/" replace={true} />}
       <Box
         sx={{
           backgroundColor: "#0A0908",
@@ -110,8 +113,11 @@ console.log(user);
                 sx={{ backgroundColor: "#0A0908", color: "gray" }}
                 type="submit"
               >
-                Submit
+                {isLoading ? "Loading..." : "Login"}
               </Button>
+              {loginError && (
+                <Typography color="error">{loginError.message}</Typography>
+              )}
             </FormControl>
           </form>
         </Container>

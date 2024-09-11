@@ -63,8 +63,6 @@ app.get("/getProposals", async (req, res, next) => {
     content: item.content.filter((el) => el.trim() !== ""),
   }));
 
-  console.log("item :", output);
-
   res.status(200).json(new ApiResponse(true, "User Proposals", output));
 });
 
@@ -83,7 +81,6 @@ app.post(
       description,
       content: proposal,
     });
-    console.log("new ", newProposal);
 
     const filterContent = newProposal.content.split("\n");
 
@@ -103,11 +100,27 @@ app.use("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  let message;
+
+  // Mongoose Cast Error
+  if (err.name === "castError") {
+    message = "Resource Not Found";
+  }
+
+  // Duplicate key error
+  if (err.name === 11000) {
+    message = "Duplicate field value entered";
+  }
+
+  // Mongoose Validation
+  if (err.name === "ValidationError") {
+    message = Object.values(err.error).map((val) => val.message);
+  }
+
   const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
   res.status(statusCode).json({
     success: false,
-    message,
+    message: message || "Internal Server Error",
   });
 });
 

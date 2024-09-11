@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  IconButton,
-  LinearProgress,
   styled,
   Typography,
 } from "@mui/material";
@@ -20,7 +18,7 @@ const Proposal = ({ data }) => {
 
   const handleCopy = async () => {
     if (data) {
-      const textToCopy = data.content.join("\n"); // join content into a single string
+      const textToCopy = data.content.join("\n");
       try {
         await navigator.clipboard.writeText(textToCopy);
         setCopied(true);

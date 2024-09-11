@@ -7,7 +7,6 @@ const Home = () => {
   const [selectedProposal, setSelectedProposal] = useState(null);
 
   const handleProposal = (proposal) => {
-    console.log("single : ", proposal);
     setSelectedProposal(proposal);
   };
 

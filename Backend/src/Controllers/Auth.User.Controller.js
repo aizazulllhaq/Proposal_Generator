@@ -16,7 +16,6 @@ export const signUp = wrapAsync(async (req, res, next) => {
   const isUser = await User.findOne({ email });
 
   if (isUser) return next(new ApiError(400, "Email Already Registered"));
-  console.log(isUser);
 
   // const cloudinaryResponse = await uploadOnCloudinary(profileImg);
 
@@ -26,14 +25,12 @@ export const signUp = wrapAsync(async (req, res, next) => {
     password,
     // profileImage: cloudinaryResponse.secure_url,
   });
-  console.log(newUser);
   const token = generateRandomToken(100);
-  
+
   newUser.token = token;
-  
+
   await newUser.save();
-  console.log(newUser);
-  
+
   EmailVerificationMail(newUser, token);
 
   res
@@ -137,4 +134,24 @@ export const resetPassword = wrapAsync(async (req, res, next) => {
         {}
       )
     );
+});
+
+export const authCheck = wrapAsync(async (req, res, next) => {
+  const accessToken = req.cookies?.accessToken;
+
+  if (accessToken) {
+    const user = jwt.verify(accessToken, JWT_SECRET);
+
+    if (user.role !== "NORMAL")
+      return next(new ApiError(false, 500, "Internal Server Error"));
+
+    req.user = user;
+
+    return res.status(200).json({
+      id: user.id,
+      role: user.role,
+    });
+  }
+
+  return next(new ApiError(false, 401, "unAuthorized"));
 });

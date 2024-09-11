@@ -4,6 +4,7 @@ import {
   resetPassword,
   signIn,
   signUp,
+  authCheck,
   verifyMail,
 } from "../Controllers/Auth.User.Controller.js";
 import upload from "../Middlewares/Multer.Middleware.js";
@@ -17,6 +18,7 @@ authUserRouter
   .post("/verify-mail/:token", verifyMail)
   .post("/signin", signIn)
   .post("/forget-password", forgetPasswordRequest)
-  .post("/reset-password", resetPassword);
+  .post("/reset-password", resetPassword)
+  .get("/check", authCheck);
 
 export default authUserRouter;

@@ -10,19 +10,30 @@ import {
 import React from "react";
 import { AccountCircle } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import apiClient from "./Utils/apiClient";
 import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setError, setLoading, setUser } from "../authSlice";
+import { signup } from "../authApi";
 
-const signUp = async ({ name, email, password }) => {
-  const response = await apiClient.post("/api/v1/users/auth/signup", {
-    name,
-    email,
-    password,
+const Register = () => {
+  const dispatch = useDispatch();
+
+  const {
+    mutate,
+    isLoading,
+    error: signupError,
+  } = useMutation({
+    mutationFn: signup,
+    onSuccess: (data) => {
+      console.log("Registration Successfull");
+      dispatch(setUser(data.user));
+    },
+    onError: (err) => {
+      console.log("Register Error : ", err);
+      dispatch(setError(err.message));
+    },
   });
-  console.log(response);
-};
 
-const Signup = () => {
   const {
     register,
     handleSubmit,
@@ -30,19 +41,11 @@ const Signup = () => {
     formState: { error },
   } = useForm();
 
-  const { mutate } = useMutation({
-    mutationFn: signUp,
-    onSuccess: () => {
-      console.log("Registration Successfull");
-    },
-    onError: (error) => {
-      console.log("Register Error : ", error.response.data.message);
-    },
-  });
-
   const onSubmit = (data) => {
+    dispatch(setLoading(true));
     console.log(data);
-    // mutate(data);
+    mutate(data);
+    dispatch(setLoading(false));
     reset();
   };
 
@@ -112,8 +115,11 @@ const Signup = () => {
               sx={{ backgroundColor: "#0A0908", color: "gray" }}
               type="submit"
             >
-              Submit
+              {isLoading ? "Loading..." : "Signup"}
             </Button>
+            {signupError && (
+              <Typography color="error">{signupError.message}</Typography>
+            )}
           </FormControl>
         </form>
       </Container>
@@ -121,4 +127,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;

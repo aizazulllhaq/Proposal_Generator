@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Link,
   Menu,
   MenuItem,
   Toolbar,
@@ -11,7 +12,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const Navbar = ({ user, setUser }) => {
+const Navbar = () => {
+  const [user, setUser] = useState(true);
   const [open, setOpen] = useState(false);
 
   return (
@@ -30,8 +32,12 @@ const Navbar = ({ user, setUser }) => {
         ) : (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ButtonGroup color="error">
-              <Button>Login</Button>
-              <Button>Signup</Button>
+              <Button component={Link} href="/signin">
+                Login
+              </Button>
+              <Button component={Link} href="/signup">
+                Signup
+              </Button>
             </ButtonGroup>
           </Box>
         )}
