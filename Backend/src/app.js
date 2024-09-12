@@ -46,52 +46,53 @@ app.use(
 );
 
 // Rough
-app.get("/getProposals", async (req, res, next) => {
-  // Fetching the user's proposals
-  const proposals = await Proposal.find({})
-    .sort({ createdAt: -1 })
-    .limit(7)
-    .lean();
+// app.get("/getProposals", async (req, res, next) => {
+//   // Fetching the user's proposals
+//   const proposals = await Proposal.find({})
+//     .sort({ createdAt: -1 })
+//     .limit(7)
+//     .lean();
 
-  const updatedProposals = proposals.map((proposal) => {
-    const nProposal = proposal.content.split("\n");
-    return { ...proposal, content: nProposal };
-  });
+//   const updatedProposals = proposals.map((proposal) => {
+//     const nProposal = proposal.content.split("\n");
+//     return { ...proposal, content: nProposal };
+//   });
 
-  const output = updatedProposals.map((item) => ({
-    ...item,
-    content: item.content.filter((el) => el.trim() !== ""),
-  }));
+//   const output = updatedProposals.map((item) => ({
+//     ...item,
+//     content: item.content.filter((el) => el.trim() !== ""),
+//   }));
+//   console.log(output);
 
-  res.status(200).json(new ApiResponse(true, "User Proposals", output));
-});
+//   res.status(200).json(new ApiResponse(true, "User Proposals", output));
+// });
 
-app.post(
-  "/generate-proposal",
-  wrapAsync(async (req, res, next) => {
-    const { name, description } = req.body;
+// app.post(
+//   "/generate-proposal",
+//   wrapAsync(async (req, res, next) => {
+//     const { name, description } = req.body;
 
-    // gptGenerateProposal(prompt)
-    const proposal = await gptGenerateProposal(
-      `client name is ${name} , and client project description :  ${description} please write proposal for it`
-    );
+//     // gptGenerateProposal(prompt)
+//     const proposal = await gptGenerateProposal(
+//       `client name is ${name} , and client project description :  ${description} please write proposal for it`
+//     );
 
-    const newProposal = await Proposal.create({
-      name,
-      description,
-      content: proposal,
-    });
+//     const newProposal = await Proposal.create({
+//       name,
+//       description,
+//       content: proposal,
+//     });
 
-    const filterContent = newProposal.content.split("\n");
+//     const filterContent = newProposal.content.split("\n");
 
-    res.status(200).json(
-      new ApiResponse(true, "Project Proposal", {
-        content: filterContent,
-        name: newProposal.name,
-      })
-    );
-  })
-);
+//     res.status(200).json(
+//       new ApiResponse(true, "Project Proposal", {
+//         content: filterContent,
+//         name: newProposal.name,
+//       })
+//     );
+//   })
+// );
 
 // Rough End
 
@@ -100,27 +101,11 @@ app.use("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  let message;
-
-  // Mongoose Cast Error
-  if (err.name === "castError") {
-    message = "Resource Not Found";
-  }
-
-  // Duplicate key error
-  if (err.name === 11000) {
-    message = "Duplicate field value entered";
-  }
-
-  // Mongoose Validation
-  if (err.name === "ValidationError") {
-    message = Object.values(err.error).map((val) => val.message);
-  }
-
   const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
   res.status(statusCode).json({
     success: false,
-    message: message || "Internal Server Error",
+    message,
   });
 });
 

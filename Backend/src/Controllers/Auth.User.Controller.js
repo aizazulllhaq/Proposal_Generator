@@ -1,4 +1,5 @@
 import { uploadOnCloudinary } from "../Config/Cloudinary.Config.js";
+import { JWT_SECRET } from "../constant.js";
 import User from "../Models/User.Model.js";
 import ApiError from "../Utils/ApiError.js";
 import ApiResponse from "../Utils/ApiResponse.js";
@@ -8,6 +9,7 @@ import {
   ForgetPasswordMail,
 } from "../Utils/SendMail.js";
 import wrapAsync from "../Utils/wrapAsync.js";
+import jwt from "jsonwebtoken";
 
 export const signUp = wrapAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -15,32 +17,29 @@ export const signUp = wrapAsync(async (req, res, next) => {
 
   const isUser = await User.findOne({ email });
 
-  if (isUser) return next(new ApiError(400, "Email Already Registered"));
+  if (isUser) {
+    return next(new ApiError(400, "Email Already Registered"));
+  }
 
   // const cloudinaryResponse = await uploadOnCloudinary(profileImg);
 
-  const newUser = new User({
+  const newUser = await User.create({
     name,
     email,
     password,
+    isVerified: true,
     // profileImage: cloudinaryResponse.secure_url,
   });
-  const token = generateRandomToken(100);
 
-  newUser.token = token;
+  const accessToken = await newUser.generateAccessToken();
 
-  await newUser.save();
-
-  EmailVerificationMail(newUser, token);
-
-  res
+  return res
     .status(201)
+    .cookie("accessToken", accessToken, { httpOnly: true, SameSite: "none" })
     .json(
-      new ApiResponse(
-        true,
-        "User Created , Please Verify your mail to login",
-        {}
-      )
+      new ApiResponse(true, "User Registration Successfull", {
+        id: newUser._id,
+      })
     );
 });
 
@@ -66,24 +65,24 @@ export const verifyMail = wrapAsync(async (req, res, next) => {
 
 export const signIn = wrapAsync(async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email,password)
 
   const isUser = await User.findOne({ email });
+  console.log("isUser : ", isUser);
 
   if (!isUser) return next(new ApiError(400, "Invalid Credentials"));
 
   const isPasswordCorrect = await isUser.isPasswordMatch(password);
 
   if (!isPasswordCorrect) return next(new ApiError(400, "Invalid Credentials"));
-
-  if (!isUser.isVerified)
-    return next(new ApiError(400, "Please first verify mail"));
+  console.log("isPasswordCorrect :", isPasswordCorrect);
 
   const accessToken = await isUser.generateAccessToken();
 
   res
     .status(201)
     .cookie("accessToken", accessToken, { httpOnly: true, SameSite: "none" })
-    .json(new ApiResponse(true, "User Login", {}));
+    .json(new ApiResponse(true, "User Login", { id: isUser._id }));
 });
 
 export const forgetPasswordRequest = wrapAsync(async (req, res, next) => {
@@ -142,15 +141,12 @@ export const authCheck = wrapAsync(async (req, res, next) => {
   if (accessToken) {
     const user = jwt.verify(accessToken, JWT_SECRET);
 
-    if (user.role !== "NORMAL")
-      return next(new ApiError(false, 500, "Internal Server Error"));
-
-    req.user = user;
-
-    return res.status(200).json({
-      id: user.id,
-      role: user.role,
-    });
+    if (user) {
+      req.user = user;
+      return res
+        .status(200)
+        .json(new ApiResponse(true, "Authenticated", { id: user.id }));
+    }
   }
 
   return next(new ApiError(false, 401, "unAuthorized"));

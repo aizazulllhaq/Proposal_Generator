@@ -1,35 +1,49 @@
 import apiClient from "../../Components/Utils/apiClient";
 
 export async function signin(data) {
+  const { email, password } = data;
   try {
     const response = await apiClient.post("/api/v1/users/auth/signin", {
-      data,
+      email,
+      password,
     });
-    console.log(response);
-    return response.data;
+    console.log("login response : ", response);
+    const msg = response.data.msg;
+    const id = response.data.data.id;
+    return { msg, id };
   } catch (error) {
-    console.log("Login Error ", error);
+    throw error.response.data.message;
   }
 }
 
 export async function signup(data) {
   try {
+    const { name, email, password } = data;
     const response = await apiClient.post("/api/v1/users/auth/signup", {
-      data,
+      name,
+      email,
+      password,
     });
-    console.log("signup response : ", response);
-    return response.data;
+    const msg = response.data.msg;
+    const id = response.data.data.id;
+    return { msg, id };
   } catch (error) {
-    console.log("signup Error ", error);
+    throw error.response.data.message;
+  }
+}
+
+export async function logout() {
+  try {
+    const response = await apiClient.post("/api/v1/users/logout");
+    console.log("response : ", response.data.msg);
+    return response.data.msg;
+  } catch (error) {
+    console.log("logout error : ", error);
   }
 }
 
 export async function authCheck() {
-  try {
-    const response = await apiClient.get("/api/v1/users/auth/check");
-    console.log("check : ", response);
-    return response.data;
-  } catch (error) {
-    console.log("auth check error : ", error);
-  }
+  const response = await apiClient.get("/api/v1/users/auth/check");
+  console.log("check : ", response.data);
+  return response.data;
 }

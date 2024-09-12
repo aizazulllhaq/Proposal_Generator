@@ -10,49 +10,35 @@ import {
 import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
 import { LoginOutlined } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { signin } from "../authApi";
-import { setError, setLoading, setUser } from "../authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectLoggedInUserID, signinAsync } from "../authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const LoggedInUserID = useSelector(selectLoggedInUserID);
+  const { signinMsg, signinError } = useSelector((state) => state.auth);
 
-  const {
-    mutate,
-    data,
-    error: loginError,
-    isLoading,
-  } = useMutation({
-    mutationFn: signin,
-    onSuccess: () => {
-      console.log("Login Successfull");
-      dispatch(setUser(data.user));
-    },
-    onError: (err) => {
-      console.log("Error while login : ", err);
-      dispatch(setError(err.message));
-    },
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { error },
-    reset,
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data) => {
-    dispatch(setLoading(true));
-    mutate(data);
-    dispatch(setLoading(false));
+    dispatch(signinAsync(data));
     reset();
   };
 
+  if (signinError) {
+    toast.error(signinError.message);
+  }
+
+  if (signinMsg) {
+    toast.success(signinMsg);
+  }
+
   return (
     <>
+      {LoggedInUserID && <Navigate to="/" replace={true} />}
       <Box
         sx={{
           backgroundColor: "#0A0908",
@@ -113,11 +99,8 @@ const Login = () => {
                 sx={{ backgroundColor: "#0A0908", color: "gray" }}
                 type="submit"
               >
-                {isLoading ? "Loading..." : "Login"}
+                Login
               </Button>
-              {loginError && (
-                <Typography color="error">{loginError.message}</Typography>
-              )}
             </FormControl>
           </form>
         </Container>

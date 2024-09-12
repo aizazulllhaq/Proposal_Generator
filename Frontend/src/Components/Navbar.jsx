@@ -11,16 +11,32 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutAsync, selectLoggedInUserID } from "../features/Auth/authSlice";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const [user, setUser] = useState(true);
+  const dispatch = useDispatch();
+  const LoggedInUserID = useSelector(selectLoggedInUserID);
+  const { logoutMsg } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
+
+  console.log("LoggedInUserID ", LoggedInUserID);
+
+  const handleLogout = () => {
+    dispatch(logoutAsync());
+    setOpen(false);
+  };
+
+  if (logoutMsg) {
+    toast.success(logoutMsg);
+  }
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#1E201E" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography>P G</Typography>
-        {user ? (
+        {LoggedInUserID ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography>Aizaz</Typography>
             <Avatar
@@ -57,7 +73,7 @@ const Navbar = () => {
           mt: 5,
         }}
       >
-        <MenuItem bgcolor={"#111111"}>Profile</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </AppBar>
   );

@@ -8,6 +8,7 @@ const userRouter = Router();
 
 userRouter
   .get("/my", getUser)
-  .post("/logout", logoutUser);
+  .post("/logout", logoutUser)
+
 
 export default userRouter;
