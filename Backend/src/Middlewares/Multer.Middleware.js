@@ -4,7 +4,8 @@ import ApiError from "../Utils/ApiError.js";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/uploads");
+    const uploadPath = path.resolve("public", "uploads");
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];

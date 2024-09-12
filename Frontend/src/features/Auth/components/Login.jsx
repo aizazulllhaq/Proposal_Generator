@@ -97,8 +97,9 @@ const Login = () => {
                 />
               </Box>
               <Button
+                color="error"
+                variant="contained"
                 startIcon={<LoginOutlined />}
-                sx={{ backgroundColor: "#0A0908", color: "gray" }}
                 type="submit"
               >
                 Login

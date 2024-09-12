@@ -17,11 +17,10 @@ export async function signin(data) {
 
 export async function signup(data) {
   try {
-    const { name, email, password } = data;
-    const response = await apiClient.post("/api/v1/users/auth/signup", {
-      name,
-      email,
-      password,
+    const response = await apiClient.post("/api/v1/users/auth/signup", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     const msg = response.data.msg;
     const id = response.data.data.id;
@@ -31,12 +30,16 @@ export async function signup(data) {
   }
 }
 
+export async function userInfo() {
+  const response = await apiClient.get("/api/v1/users/my");
+  return response.data.data;
+}
+
 export async function logout() {
   try {
     const response = await apiClient.post("/api/v1/users/logout");
     return response.data.msg;
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 export async function authCheck() {

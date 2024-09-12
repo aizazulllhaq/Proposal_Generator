@@ -6,9 +6,10 @@ import {
   TextField,
   Container,
   Typography,
+  InputBase,
 } from "@mui/material";
 import React, { useEffect } from "react";
-import { AccountCircle } from "@mui/icons-material";
+import { AccountCircle, CloudUpload } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUserID, signupAsync } from "../authSlice";
@@ -20,20 +21,31 @@ const Register = () => {
   const LoggedInUserID = useSelector(selectLoggedInUserID);
   const { signupError, signupMsg } = useSelector((state) => state.auth);
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   const onSubmit = (data) => {
-    dispatch(signupAsync(data));
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    if (data.profileImage[0]) {
+      formData.append("profileImage", data.profileImage[0]);
+    }
+
+    dispatch(signupAsync(formData));
+    console.log("Data : ", formData);
     reset();
   };
 
-  if (signupError) {
-    toast.error(signupError.message);
-  }
+  useEffect(() => {
+    if (signupError) {
+      toast.error(signupError.message);
+    }
 
-  if (signupMsg) {
-    toast.success(signupMsg);
-  }
+    if (signupMsg) {
+      toast.success(signupMsg);
+    }
+  }, [signupMsg, signupError]);
 
   return (
     <>
@@ -70,7 +82,7 @@ const Register = () => {
             <AccountCircle sx={{ paddingRight: "6px" }} />
             Create your account
           </Typography>
-          <form action="" onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
             <FormControl fullWidth>
               <Box mb={2}>
                 <FormLabel sx={{ color: "gray" }}>Enter Name</FormLabel>
@@ -101,10 +113,29 @@ const Register = () => {
                   })}
                 />
               </Box>
-              <Button
-                sx={{ backgroundColor: "#0A0908", color: "gray" }}
-                type="submit"
-              >
+              <Box mb={2}>
+                <FormLabel sx={{ color: "gray", marginRight: 2 }}>
+                  Profile Picture
+                </FormLabel>
+                <Button
+                  component="label"
+                  variant="outlined"
+                  color="error"
+                  tabIndex={-1}
+                  startIcon={<CloudUpload />}
+                >
+                  Upload files
+                  <InputBase
+                    type="file"
+                    onChange={(e) => setValue("profileImage", e.target.files)}
+                    sx={{ display: "none" }}
+                    {...register("profileImage", {
+                      required: "Profile Image is required",
+                    })}
+                  />
+                </Button>
+              </Box>
+              <Button color="error" variant="contained" type="submit">
                 Signup
               </Button>
             </FormControl>

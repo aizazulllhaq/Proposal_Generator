@@ -12,12 +12,19 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearLogoutMsg, logoutAsync, selectLoggedInUserID } from "../features/Auth/authSlice";
+import {
+  clearLogoutMsg,
+  logoutAsync,
+  selectLoggedInUserID,
+  selectUserInfo,
+  userInfoAsync,
+} from "../features/Auth/authSlice";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const LoggedInUserID = useSelector(selectLoggedInUserID);
+  const userInfo = useSelector(selectUserInfo);
   const { logoutMsg } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
@@ -29,10 +36,15 @@ const Navbar = () => {
   useEffect(() => {
     if (logoutMsg && !LoggedInUserID) {
       toast.success(logoutMsg);
-      // Optionally, clear the logout message from state after showing it
       dispatch(clearLogoutMsg());
     }
   }, [logoutMsg, LoggedInUserID, dispatch]);
+
+  useEffect(() => {
+    if (LoggedInUserID) {
+      dispatch(userInfoAsync());
+    }
+  }, [dispatch]);
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#1E201E" }}>
@@ -40,9 +52,9 @@ const Navbar = () => {
         <Typography>P G</Typography>
         {LoggedInUserID ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography>Aizaz</Typography>
+            <Typography>{userInfo?.name}</Typography>
             <Avatar
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK_mAcrV3vVhLq6HK4c1liqGV59qhOwXdEGw&s"
+              src={userInfo?.profileImage}
               sx={{ width: 30, height: 30 }}
               onClick={(e) => setOpen(true)}
             />

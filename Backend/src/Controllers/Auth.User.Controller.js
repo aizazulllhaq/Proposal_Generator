@@ -13,7 +13,9 @@ import jwt from "jsonwebtoken";
 
 export const signUp = wrapAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
-  // const profileImg = req.file?.path;
+  const profileImg = req.file?.path;
+  console.log("body : ", req.body);
+  console.log("profileImg : ", profileImg);
 
   const isUser = await User.findOne({ email });
 
@@ -21,17 +23,19 @@ export const signUp = wrapAsync(async (req, res, next) => {
     return next(new ApiError(400, "Email Already Registered"));
   }
 
-  // const cloudinaryResponse = await uploadOnCloudinary(profileImg);
+  const cloudinaryResponse = await uploadOnCloudinary(profileImg);
+  console.log(cloudinaryResponse);
 
   const newUser = await User.create({
     name,
     email,
     password,
     isVerified: true,
-    // profileImage: cloudinaryResponse.secure_url,
+    profileImage: cloudinaryResponse.secure_url,
   });
 
   const accessToken = await newUser.generateAccessToken();
+  console.log("New User : ", newUser);
 
   return res
     .status(201)
