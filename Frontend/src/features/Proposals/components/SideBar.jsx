@@ -6,26 +6,19 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import HistoryIcon from "@mui/icons-material/History";
-import apiClient from "../Utils/apiClient";
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProposalsAsync } from "../proposalsSlice";
 
-const fetchProposals = async () => {
-  const response = await apiClient.get("/getProposals");
-  const proposals = response.data.data;
-  console.log("Get proposals sidebar : ", proposals);
-  return proposals;
-};
+const SideBar = ({ setProposal }) => {
+  const dispatch = useDispatch();
+  const proposals = useSelector((state) => state.proposals.userProposals);
 
-const SideBar = ({ onProposalClick }) => {
-  const { data: proposals } = useQuery({
-    queryKey: ["proposals"],
-    queryFn: fetchProposals,
-  });
-
+  useEffect(() => {
+    dispatch(getUserProposalsAsync());
+  }, [dispatch]);
   return (
     <Box
       flex={2}
@@ -66,7 +59,9 @@ const SideBar = ({ onProposalClick }) => {
             History
           </Typography>
         </Box>
-          <Typography variant="span" color="gray" sx={{marginLeft:6}}>Last 7 Submitted Proposals</Typography>
+        <Typography variant="span" color="gray" sx={{ marginLeft: 6 }}>
+          Last 7 Submitted Proposals
+        </Typography>
         <List
           sx={{
             width: "100%",
@@ -86,10 +81,10 @@ const SideBar = ({ onProposalClick }) => {
             }}
           ></Box>
           {proposals &&
-            proposals.map((proposal) => (
-              <ListItem key={proposal.id}>
+            proposals.map((proposal, index) => (
+              <ListItem key={index}>
                 <KeyboardArrowRightIcon />
-                <ListItemButton onClick={() => onProposalClick(proposal)}>
+                <ListItemButton onClick={() => setProposal(proposal)}>
                   <ListItemText
                     primary={proposal.name}
                     sx={{

@@ -21,7 +21,14 @@ export const generateProposal = wrapAsync(async (req, res, next) => {
     content: proposal,
   });
 
-  res.status(200).json(new ApiResponse(true, "Project Proposal", newProposal));
+  const filterContent = newProposal.content.split("\n");
+
+  res.status(200).json(
+    new ApiResponse(true, "Project Proposal", {
+      content: filterContent,
+      name: newProposal.name,
+    })
+  );
 });
 
 export const getProposalByUserId = wrapAsync(async (req, res, next) => {
@@ -40,17 +47,5 @@ export const getProposalByUserId = wrapAsync(async (req, res, next) => {
     content: item.content.filter((el) => el.trim() !== ""),
   }));
 
-  // const finalOutput = output.map((item) => {
-  //   const filterContent = item.content.map((item) =>
-  //     item.trim().endsWith(":") ? `**${item.trim()}**` : item
-  //   );
-  //   return {
-  //     ...output,
-  //     content: filterContent,
-  //   };
-  // });
-
-  // Send the response with the user's proposals
-  
   res.status(200).json(new ApiResponse(true, "User Proposals", output));
 });

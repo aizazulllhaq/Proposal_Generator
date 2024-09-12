@@ -22,7 +22,7 @@ export const logoutAsync = createAsyncThunk("auth/logout", async () => {
 });
 
 const authSlice = createSlice({
-  name: "login",
+  name: "auth",
   initialState: {
     LoggedInUserID: null,
     checkAuth: false,
@@ -33,7 +33,11 @@ const authSlice = createSlice({
     signinMsg: null,
     logoutMsg: null,
   },
-  reducers: {},
+  reducers: {
+    clearLogoutMsg: (state) => {
+      state.logoutMsg = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(authCheckAsync.pending, (state) => {
@@ -65,7 +69,6 @@ const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(signupAsync.fulfilled, (state, action) => {
-        console.log("ap : ", action.payload);
         state.LoggedInUserID = action.payload.id;
         state.status = "idle";
         state.checkAuth = true;
@@ -82,6 +85,7 @@ const authSlice = createSlice({
   },
 });
 
+export const { clearLogoutMsg } = authSlice.actions;
 export const selectCheckAuth = (state) => state.auth.checkAuth;
 export const selectLoggedInUserID = (state) => state.auth.LoggedInUserID;
 export const { setUser, clearUser, setLoading, setError } = authSlice.actions;

@@ -7,7 +7,7 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
 import { LoginOutlined } from "@mui/icons-material";
@@ -32,9 +32,11 @@ const Login = () => {
     toast.error(signinError.message);
   }
 
-  if (signinMsg) {
-    toast.success(signinMsg);
-  }
+  useEffect(() => {
+    if (signinMsg && LoggedInUserID) {
+      toast.success(signinMsg);
+    }
+  }, [signinMsg, LoggedInUserID, dispatch]);
 
   return (
     <>

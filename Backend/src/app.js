@@ -45,57 +45,6 @@ app.use(
   proposalRouter
 );
 
-// Rough
-// app.get("/getProposals", async (req, res, next) => {
-//   // Fetching the user's proposals
-//   const proposals = await Proposal.find({})
-//     .sort({ createdAt: -1 })
-//     .limit(7)
-//     .lean();
-
-//   const updatedProposals = proposals.map((proposal) => {
-//     const nProposal = proposal.content.split("\n");
-//     return { ...proposal, content: nProposal };
-//   });
-
-//   const output = updatedProposals.map((item) => ({
-//     ...item,
-//     content: item.content.filter((el) => el.trim() !== ""),
-//   }));
-//   console.log(output);
-
-//   res.status(200).json(new ApiResponse(true, "User Proposals", output));
-// });
-
-// app.post(
-//   "/generate-proposal",
-//   wrapAsync(async (req, res, next) => {
-//     const { name, description } = req.body;
-
-//     // gptGenerateProposal(prompt)
-//     const proposal = await gptGenerateProposal(
-//       `client name is ${name} , and client project description :  ${description} please write proposal for it`
-//     );
-
-//     const newProposal = await Proposal.create({
-//       name,
-//       description,
-//       content: proposal,
-//     });
-
-//     const filterContent = newProposal.content.split("\n");
-
-//     res.status(200).json(
-//       new ApiResponse(true, "Project Proposal", {
-//         content: filterContent,
-//         name: newProposal.name,
-//       })
-//     );
-//   })
-// );
-
-// Rough End
-
 app.use("*", (req, res, next) => {
   return next(new ApiError(404, "Not Found"));
 });

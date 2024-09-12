@@ -26,7 +26,6 @@ const Register = () => {
     dispatch(signupAsync(data));
     reset();
   };
-  console.log("LoggedInUserID : ", LoggedInUserID);
 
   if (signupError) {
     toast.error(signupError.message);

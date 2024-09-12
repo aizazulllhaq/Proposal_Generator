@@ -65,17 +65,14 @@ export const verifyMail = wrapAsync(async (req, res, next) => {
 
 export const signIn = wrapAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email,password)
 
   const isUser = await User.findOne({ email });
-  console.log("isUser : ", isUser);
 
   if (!isUser) return next(new ApiError(400, "Invalid Credentials"));
 
   const isPasswordCorrect = await isUser.isPasswordMatch(password);
 
   if (!isPasswordCorrect) return next(new ApiError(400, "Invalid Credentials"));
-  console.log("isPasswordCorrect :", isPasswordCorrect);
 
   const accessToken = await isUser.generateAccessToken();
 

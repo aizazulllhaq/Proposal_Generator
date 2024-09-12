@@ -10,9 +10,9 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAsync, selectLoggedInUserID } from "../features/Auth/authSlice";
+import { clearLogoutMsg, logoutAsync, selectLoggedInUserID } from "../features/Auth/authSlice";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -21,16 +21,18 @@ const Navbar = () => {
   const { logoutMsg } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
-  console.log("LoggedInUserID ", LoggedInUserID);
-
   const handleLogout = () => {
     dispatch(logoutAsync());
     setOpen(false);
   };
 
-  if (logoutMsg) {
-    toast.success(logoutMsg);
-  }
+  useEffect(() => {
+    if (logoutMsg && !LoggedInUserID) {
+      toast.success(logoutMsg);
+      // Optionally, clear the logout message from state after showing it
+      dispatch(clearLogoutMsg());
+    }
+  }, [logoutMsg, LoggedInUserID, dispatch]);
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#1E201E" }}>

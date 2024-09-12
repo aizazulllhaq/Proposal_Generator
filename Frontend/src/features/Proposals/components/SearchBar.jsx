@@ -1,6 +1,9 @@
 import TipsAndUpdates from "@mui/icons-material/TipsAndUpdates";
 import { Button, InputBase, styled, Typography } from "@mui/material";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { getUserProposalsAsync, newProposalAsync } from "../proposalsSlice";
 
 const SearchBarSection = styled("div")({
   width: "90%",
@@ -52,17 +55,14 @@ const StyledInput = styled(InputBase)({
   },
 });
 
-const SearchBar = ({
-  handleSubmit,
-  register,
-  reset,
-  mutate,
-  setIsNewProposal,
-}) => {
-  const onSubmit = (data) => {
-    mutate(data);
+const SearchBar = () => {
+  const dispatch = useDispatch();
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = async (data) => {
+    await dispatch(newProposalAsync(data));
+    dispatch(getUserProposalsAsync());
     reset();
-    setIsNewProposal(false);
   };
 
   return (
